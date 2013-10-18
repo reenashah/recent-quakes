@@ -67,6 +67,18 @@ plot_quakes(alaska)
 
 # <codecell>
 
+import urllib
+import json
+import pandas as pd
+
+url = 'http://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/significant_week.geojson'
+d = json.loads(urllib.urlopen(url).read())
+
+data = pd.DataFrame(d.items())
+data
+
+# <codecell>
+
 alaska = clean_data[clean_data.Src == 'ak']
 alaska[0:10]
 
