@@ -65,3 +65,35 @@ def plot_quakes(quakes):
 
 plot_quakes(alaska)
 
+# <codecell>
+
+alaska = clean_data[clean_data.Src == 'ak']
+alaska[0:10]
+
+clean_data.Src
+unique(clean_data.Src)
+
+# <codecell>
+
+from mpl_toolkits.basemap import Basemap
+
+def basemap(state):
+    
+    return basemap
+
+def plot_quakes(quakes, state):
+    
+    m = Basemap(llcrnrlon=-180,llcrnrlat=50.,
+                urcrnrlon=-120.,urcrnrlat=72,
+                resolution='l',area_thresh=1000.,projection='merc',
+                lat_0=62.9540,lon_0=-149.2697)
+    m.drawcoastlines()
+    m.drawcountries()
+    m.fillcontinents(color='coral',lake_color='blue')
+    m.drawmapboundary(fill_color='aqua')
+    x, y = m(quakes.Lon, quakes.Lat)
+    m.plot(x, y, 'k.')
+    return m
+
+plot_quakes(alaska)
+
