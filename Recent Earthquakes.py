@@ -89,9 +89,8 @@ unique(clean_data.Src)
 from mpl_toolkits.basemap import Basemap
 
 def plot_quakes(quakes):
-    m = Basemap(resolution='i',projection='merc',area_thresh=1000.,
-        lat_0=sum(quakes.Lat)/len(quakes.Lat),lon_0=sum(quakes.Lon)/len(quakes.Lon),
-        urcrnrlat=max(quakes.Lat))
+    m = Basemap(resolution='h',projection='nsper',area_thresh=1000., satellite_height=300000,
+        lat_0=sum(quakes.Lat)/len(quakes.Lat),lon_0=sum(quakes.Lon)/len(quakes.Lon))
     # lat_0=sum(quakes.Lat)/len(quakes.Lat),lon_0=sum(quakes.Lon)/len(quakes.Lon)
     m.drawcoastlines()
     m.drawcountries()
@@ -99,19 +98,12 @@ def plot_quakes(quakes):
     m.drawmapboundary(fill_color='aqua')
     x, y = m(quakes.Lon, quakes.Lat)
     for i in range(0,len(x)-1):
-        m.plot(x[i:i+1], y[i:i+1], 'g',marker='o',markersize=(pi*quakes.Magnitude[i:i+1]**2),alpha=0.6)
+        m.plot(x[i:i+1], y[i:i+1], 'g',marker='o',markersize=(pi/2*quakes.Magnitude[i:i+1]**2),alpha=0.6)
     return m
 
 # <codecell>
 
 plot_quakes(alaska)
-
-# <codecell>
-
-
-# <codecell>
-
-x[0:1]
 
 # <codecell>
 
