@@ -80,7 +80,6 @@ data
 # <codecell>
 
 alaska = clean_data[clean_data.Src == 'ak']
-alaska[0:10]
 
 clean_data.Src
 unique(clean_data.Src)
@@ -89,23 +88,31 @@ unique(clean_data.Src)
 
 from mpl_toolkits.basemap import Basemap
 
-def basemap(state):
-    
-    return basemap
-
-def plot_quakes(quakes, state):
-    
-    m = Basemap(llcrnrlon=-180,llcrnrlat=50.,
-                urcrnrlon=-120.,urcrnrlat=72,
-                resolution='l',area_thresh=1000.,projection='merc',
-                lat_0=62.9540,lon_0=-149.2697)
+def plot_quakes(quakes):
+    m = Basemap(resolution='i',projection='merc',area_thresh=1000.,
+        lat_0=sum(quakes.Lat)/len(quakes.Lat),lon_0=sum(quakes.Lon)/len(quakes.Lon),
+        urcrnrlat=max(quakes.Lat))
+    # lat_0=sum(quakes.Lat)/len(quakes.Lat),lon_0=sum(quakes.Lon)/len(quakes.Lon)
     m.drawcoastlines()
     m.drawcountries()
     m.fillcontinents(color='coral',lake_color='blue')
     m.drawmapboundary(fill_color='aqua')
     x, y = m(quakes.Lon, quakes.Lat)
-    m.plot(x, y, 'k.')
+    for i in range(0,len(x)-1):
+        m.plot(x[i:i+1], y[i:i+1], 'g',marker='o',markersize=(pi*quakes.Magnitude[i:i+1]**2),alpha=0.6)
     return m
 
+# <codecell>
+
 plot_quakes(alaska)
+
+# <codecell>
+
+
+# <codecell>
+
+x[0:1]
+
+# <codecell>
+
 
