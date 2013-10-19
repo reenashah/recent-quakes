@@ -91,7 +91,7 @@ from mpl_toolkits.basemap import Basemap
 def plot_quakes(quakes):
     cenlat = sum(quakes.Lat)/len(quakes.Lat)
     cenlon = sum(quakes.Lon)/len(quakes.Lon)
-    m = Basemap(resolution='h',projection='nsper',area_thresh=1000., satellite_height=280000,
+    m = Basemap(resolution='l',projection='nsper',area_thresh=1000., satellite_height=1500000,
         lat_0=cenlat,lon_0=cenlon)
     m.drawcoastlines()
     m.drawcountries()
@@ -107,6 +107,16 @@ plot_quakes(alaska)
 
 # <codecell>
 
+unique(clean_data.Src)
+
+# <codecell>
+
+x = clean_data[clean_data.Src == 'pt']
+plot_quakes(x)
+
+# <codecell>
+
+# Reverse Geocoding Testing
 from pygeocoder import Geocoder
 
 results = Geocoder.reverse_geocode(60.2912, -150.7650)
@@ -114,12 +124,7 @@ results.state
 
 # <codecell>
 
-unique(clean_data.Src)
-
-# <codecell>
-
-x = clean_data[clean_data.Src == 'mb']
-plot_quakes(x)
+x[0:4]
 
 # <codecell>
 
