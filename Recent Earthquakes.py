@@ -89,11 +89,13 @@ unique(clean_data.Src)
 from mpl_toolkits.basemap import Basemap
 
 def plot_quakes(quakes):
-    m = Basemap(resolution='h',projection='nsper',area_thresh=1000., satellite_height=300000,
-        lat_0=sum(quakes.Lat)/len(quakes.Lat),lon_0=sum(quakes.Lon)/len(quakes.Lon))
-    # lat_0=sum(quakes.Lat)/len(quakes.Lat),lon_0=sum(quakes.Lon)/len(quakes.Lon)
+    cenlat = sum(quakes.Lat)/len(quakes.Lat)
+    cenlon = sum(quakes.Lon)/len(quakes.Lon)
+    m = Basemap(resolution='h',projection='nsper',area_thresh=1000., satellite_height=280000,
+        lat_0=cenlat,lon_0=cenlon)
     m.drawcoastlines()
     m.drawcountries()
+    m.drawstates()
     m.fillcontinents(color='coral',lake_color='blue')
     m.drawmapboundary(fill_color='aqua')
     x, y = m(quakes.Lon, quakes.Lat)
@@ -101,9 +103,23 @@ def plot_quakes(quakes):
         m.plot(x[i:i+1], y[i:i+1], 'g',marker='o',markersize=(pi/2*quakes.Magnitude[i:i+1]**2),alpha=0.6)
     return m
 
+plot_quakes(alaska)
+
 # <codecell>
 
-plot_quakes(alaska)
+from pygeocoder import Geocoder
+
+results = Geocoder.reverse_geocode(60.2912, -150.7650)
+results.state
+
+# <codecell>
+
+unique(clean_data.Src)
+
+# <codecell>
+
+x = clean_data[clean_data.Src == 'mb']
+plot_quakes(x)
 
 # <codecell>
 
