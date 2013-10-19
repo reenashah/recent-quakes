@@ -87,20 +87,24 @@ unique(clean_data.Src)
 # <codecell>
 
 from mpl_toolkits.basemap import Basemap
+from numpy import mean
 
 def plot_quakes(quakes):
-    cenlat = sum(quakes.Lat)/len(quakes.Lat)
-    cenlon = sum(quakes.Lon)/len(quakes.Lon)
-    m = Basemap(resolution='l',projection='nsper',area_thresh=1000., satellite_height=200000,
-        lat_0=cenlat,lon_0=cenlon)
+    cenlat = mean(quakes.Lat)
+    cenlon = mean(quakes.Lon)
+    m = Basemap(resolution = 'l', projection='nsper',
+                area_thresh = 1000., satellite_height = 200000,
+                lat_0 = cenlat, lon_0 = cenlon)
     m.drawcoastlines()
     m.drawcountries()
     m.drawstates()
-    m.fillcontinents(color='coral',lake_color='blue')
-    m.drawmapboundary(fill_color='aqua')
+    m.fillcontinents(color = 'green', lake_color = 'aqua')
+    m.drawmapboundary(fill_color = 'blue')
     x, y = m(quakes.Lon, quakes.Lat)
-    for i in range(0,len(x)-1):
-        m.plot(x[i:i+1], y[i:i+1], 'g',marker='o',markersize=(pi/2*quakes.Magnitude[i:i+1]**2),alpha=0.6)
+    for i in range(0, len(x) - 1):
+        m.plot(x[i:i+1], y[i:i+1], 'orange', 
+               marker = 'o', markersize = (pi / 2 * quakes.Magnitude[i:i+1]**2), 
+               alpha = 0.6)
     return m
 
 # <codecell>
@@ -113,8 +117,8 @@ unique(clean_data.Src)
 
 # <codecell>
 
-x = clean_data[clean_data.Src == 'uu']
-plot_quakes(x)
+northern_california = clean_data[clean_data.Src == 'nc']
+plot_quakes(northern_california)
 
 # <codecell>
 
