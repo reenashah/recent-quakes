@@ -91,7 +91,7 @@ from mpl_toolkits.basemap import Basemap
 def plot_quakes(quakes):
     cenlat = sum(quakes.Lat)/len(quakes.Lat)
     cenlon = sum(quakes.Lon)/len(quakes.Lon)
-    m = Basemap(resolution='l',projection='nsper',area_thresh=1000., satellite_height=1500000,
+    m = Basemap(resolution='l',projection='nsper',area_thresh=1000., satellite_height=200000,
         lat_0=cenlat,lon_0=cenlon)
     m.drawcoastlines()
     m.drawcountries()
@@ -103,6 +103,8 @@ def plot_quakes(quakes):
         m.plot(x[i:i+1], y[i:i+1], 'g',marker='o',markersize=(pi/2*quakes.Magnitude[i:i+1]**2),alpha=0.6)
     return m
 
+# <codecell>
+
 plot_quakes(alaska)
 
 # <codecell>
@@ -111,7 +113,7 @@ unique(clean_data.Src)
 
 # <codecell>
 
-x = clean_data[clean_data.Src == 'pt']
+x = clean_data[clean_data.Src == 'uu']
 plot_quakes(x)
 
 # <codecell>
