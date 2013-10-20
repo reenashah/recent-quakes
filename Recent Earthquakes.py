@@ -79,6 +79,34 @@ data
 
 # <codecell>
 
+features = data[1].values[1]
+
+Latitude = []    
+Longitude = []   
+Altitude = []    
+Magnitude = []    
+Place = []
+Time = []
+
+for item in features:
+    geometry = item['geometry']
+    properties = item['properties']
+    Longitude.append(geometry['coordinates'][0])
+    Latitude.append(geometry['coordinates'][1])
+    Altitude.append(geometry['coordinates'][2])
+    Place.append(properties['place'])
+    Time.append(properties['time'])
+    Magnitude.append(properties['mag'])
+
+allQuakes = {'Time': Time, 'Place': Place, 
+             'Lon': Longitude, 'Lat': Latitude, 'Alt': Altitude,
+             'Mag': Magnitude}
+
+df = pd.DataFrame(allQuakes)
+df
+
+# <codecell>
+
 import urllib
 import json
 import pandas as pd
@@ -106,10 +134,10 @@ def save_live_data(data_url):
     data_hash = hashlib.sha1(data).hexdigest()
     date_str = datetime.utcnow().strftime("%Y-%m-%d_%H%M")
     filename = data_hash + "_" + date_str + ".geojson"
-    print filename
     urllib.urlretrieve(data_url, filename)
+    print "data retrieved and saved as: " + filename
 
-save_live_data(url)
+#save_live_data(url)
 
 # <codecell>
 
