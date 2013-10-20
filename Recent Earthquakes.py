@@ -163,8 +163,8 @@ def plot_quakes(quakes):
             with parameters "Lat", "Lon", "Magnitude"
     """
     
-    cenlat = df['Lat'].mean()
-    cenlon = df['Lon'].mean()
+    cenlat = quakes['Lat'].mean()
+    cenlon = quakes['Lon'].mean()
     m = Basemap(resolution = 'l', projection='nsper',
                 area_thresh = 1000., satellite_height = 200000,
                 lat_0 = cenlat, lon_0 = cenlon)
@@ -206,7 +206,7 @@ results.state
 
 # <codecell>
 
-x[0:4]
+northern_california[0:13]
 
 # <codecell>
 
