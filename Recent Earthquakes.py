@@ -87,6 +87,7 @@ Altitude = []
 Magnitude = []    
 Place = []
 Time = []
+Source = []
 
 for item in features:
     geometry = item['geometry']
@@ -94,11 +95,12 @@ for item in features:
     Longitude.append(geometry['coordinates'][0])
     Latitude.append(geometry['coordinates'][1])
     Altitude.append(geometry['coordinates'][2])
+    Source.append(properties['sources'])
     Place.append(properties['place'])
     Time.append(properties['time'])
     Magnitude.append(properties['mag'])
 
-allQuakes = {'Time': Time, 'Place': Place, 
+allQuakes = {'Src': Source, 'Time': Time, 'Place': Place, 
              'Lon': Longitude, 'Lat': Latitude, 'Alt': Altitude,
              'Mag': Magnitude}
 
