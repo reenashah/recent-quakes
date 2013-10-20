@@ -71,7 +71,7 @@ import urllib
 import json
 import pandas as pd
 
-url = 'http://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/significant_week.geojson'
+url = 'http://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/1.0_week.geojson'
 d = json.loads(urllib.urlopen(url).read())
 
 data = pd.DataFrame(d.items())
@@ -105,7 +105,8 @@ allQuakes = {'Src': Source, 'Time': Time, 'Place': Place,
              'Mag': Magnitude}
 
 df = pd.DataFrame(allQuakes)
-df
+df = df.dropna()
+df[1:10]
 
 # <codecell>
 
@@ -162,8 +163,8 @@ def plot_quakes(quakes):
             with parameters "Lat", "Lon", "Magnitude"
     """
     
-    cenlat = mean(quakes.Lat)
-    cenlon = mean(quakes.Lon)
+    cenlat = df['Lat'].mean()
+    cenlon = df['Lon'].mean()
     m = Basemap(resolution = 'l', projection='nsper',
                 area_thresh = 1000., satellite_height = 200000,
                 lat_0 = cenlat, lon_0 = cenlon)
@@ -181,7 +182,10 @@ def plot_quakes(quakes):
 
 # <codecell>
 
-plot_quakes(alaska)
+alaska = df[df['Src'].isin(',ak,')]  ## THIS IS NOT YET WORKING
+type(alaska)
+print alaska
+#plot_quakes(alaska)
 
 # <codecell>
 
