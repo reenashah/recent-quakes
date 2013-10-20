@@ -79,6 +79,40 @@ data
 
 # <codecell>
 
+import urllib
+import json
+import pandas as pd
+
+url = 'http://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/significant_week.geojson'
+d = json.loads(urllib.urlopen(url).read())
+
+data = pd.DataFrame(d.items())
+data
+
+import hashlib
+from datetime import datetime
+
+def save_live_data(data_url):
+    """
+    Fetches the data from DATA_URL and saves it.
+    The filename is of the format: <HASH>_<DATE>_<TIME>.geojson,
+        where <HASH> is a SHA1 hash of the file at data_url,
+        <DATE> and <TIME> are the current UTC date and time.
+    DATA_URL: a string containing the URL of geojson data, e.g. 
+              'http://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/significant_week.geojson'
+    """
+    
+    data = urllib.urlopen(data_url).read()
+    data_hash = hashlib.sha1(data).hexdigest()
+    date_str = datetime.utcnow().strftime("%Y-%m-%d_%H%M")
+    filename = data_hash + "_" + date_str + ".geojson"
+    print filename
+    urllib.urlretrieve(data_url, filename)
+
+save_live_data(url)
+
+# <codecell>
+
 alaska = clean_data[clean_data.Src == 'ak']
 
 clean_data.Src
@@ -90,6 +124,14 @@ from mpl_toolkits.basemap import Basemap
 from numpy import mean
 
 def plot_quakes(quakes):
+    """
+    Plots earthquakes (specified in QUAKES) as slightly-transparent
+    orange circles with area proportional to magnitude.
+
+    QUAKES: a Pandas DataFrame object containing earthquake data
+            with parameters "Lat", "Lon", "Magnitude"
+    """
+    
     cenlat = mean(quakes.Lat)
     cenlon = mean(quakes.Lon)
     m = Basemap(resolution = 'l', projection='nsper',
