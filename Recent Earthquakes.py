@@ -90,6 +90,14 @@ from mpl_toolkits.basemap import Basemap
 from numpy import mean
 
 def plot_quakes(quakes):
+    """
+    Plots earthquakes (specified in QUAKES) as slightly-transparent
+    orange circles with area proportional to magnitude.
+
+    QUAKES: a Pandas DataFrame object containing earthquake data
+            with parameters "Lat", "Lon", "Magnitude"
+    """
+    
     cenlat = mean(quakes.Lat)
     cenlon = mean(quakes.Lon)
     m = Basemap(resolution = 'l', projection='nsper',
