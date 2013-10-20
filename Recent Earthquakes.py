@@ -165,18 +165,19 @@ def plot_quakes(quakes):
     
     cenlat = quakes['Lat'].mean()
     cenlon = quakes['Lon'].mean()
+    fig = matplotlib.pyplot.figure(figsize=(9,9))
     m = Basemap(resolution = 'l', projection='nsper',
                 area_thresh = 1000., satellite_height = 200000,
                 lat_0 = cenlat, lon_0 = cenlon)
     m.drawcoastlines()
     m.drawcountries()
     m.drawstates()
-    m.fillcontinents(color = 'green', lake_color = 'aqua')
-    m.drawmapboundary(fill_color = 'blue')
+    m.fillcontinents(color = '#0CAA43', lake_color = 'aqua')
+    m.drawmapboundary(fill_color = '#0B5BD2')
     x, y = m(quakes.Lon, quakes.Lat)
     for i in range(0, len(x) - 1):
         m.plot(x[i:i+1], y[i:i+1], 'orange', 
-               marker = 'o', markersize = (pi / 2 * quakes.Magnitude[i:i+1]**2), 
+               marker = 'o', markersize = (pi /2 * quakes.Magnitude[i:i+1]**2), 
                alpha = 0.6)
     return m
 
