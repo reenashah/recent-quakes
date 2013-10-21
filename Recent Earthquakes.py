@@ -162,7 +162,9 @@ def plot_quakes(quakes):
     QUAKES: a Pandas DataFrame object containing earthquake data
             with parameters "Lat", "Lon", "Magnitude"
     """
-    
+    heatcolors = ('#FFFF00','#FF9900','#CC3333')
+    heatcolor = None
+                   
     cenlat = quakes['Lat'].mean()
     cenlon = quakes['Lon'].mean()
     fig = matplotlib.pyplot.figure(figsize=(9,9))
@@ -176,8 +178,14 @@ def plot_quakes(quakes):
     m.drawmapboundary(fill_color = '#0B5BD2')
     x, y = m(quakes.Lon, quakes.Lat)
     for i in range(0, len(x) - 1):
-        m.plot(x[i:i+1], y[i:i+1], 'orange', 
-               marker = 'o', markersize = (pi /2 * quakes.Magnitude[i:i+1]**2), 
+        if quakes.Depth[i:i+1]<70:
+            heatcolor = heatcolors[1]
+        elif 70<=quakes.Depth[i:i+1]<300:
+            heatcolor = heatcolors[2]
+        else:
+            heatcolor = heatcolors[3]
+        m.plot(x[i:i+1], y[i:i+1], heatcolor, 
+               marker = 'o', markersize = (pi*quakes.Magnitude[i:i+1]**2), 
                alpha = 0.6)
     return m
 
@@ -194,20 +202,8 @@ unique(clean_data.Src)
 
 # <codecell>
 
-northern_california = clean_data[clean_data.Src == 'nc']
+northern_california = clean_data[clean_data.Src == 'ak']
 plot_quakes(northern_california)
-
-# <codecell>
-
-# Reverse Geocoding Testing
-from pygeocoder import Geocoder
-
-results = Geocoder.reverse_geocode(60.2912, -150.7650)
-results.state
-
-# <codecell>
-
-northern_california[0:13]
 
 # <codecell>
 
