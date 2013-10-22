@@ -7,6 +7,8 @@
 # This is Group11's submission of [this Stat157 assignment](https://github.com/stat157/recent-quakes).
 # 
 # To ignore the code details and just plot the most recent quakes in northern california, scroll to the bottom.
+# 
+# To specify options (like using cached data), read on!
 
 # <markdowncell>
 
@@ -34,7 +36,7 @@ filename = 'data/f8c7029ef946b7df10fca0fb4908d7f1c3dedd91_2013-10-22_0354.geojso
 caching = False
 # To store the data locally, set caching to True
 
-region = 'ci'
+region = 'nc'
 # region must be a valid USGS network contributor: try nc, ak, ci
 
 # <markdowncell>
@@ -154,7 +156,6 @@ def process_json_data(data):
 # <codecell>
 
 from mpl_toolkits.basemap import Basemap
-#from numpy import mean
 
 def plot_quakes(quakes):
     """
@@ -232,7 +233,4 @@ def plot_data(caching=False, use_live_data=True, region='nc',
 # <codecell>
 
 plot_data(caching, use_live_data, region, url, filename)
-
-# <codecell>
-
 
