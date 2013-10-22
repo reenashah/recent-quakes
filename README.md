@@ -16,3 +16,11 @@ cd recent-quakes-Group11/
 git clone git@github.com:reenashah/recent-quakes-Group11-data.git data
 ```
 
+The first command cloned our source code ("recent-quakes-Group11").  The third command created a directory called "data" and cloned our [data repository](https://github.com/reenashah/recent-quakes-Group11-data) into the source code directory.
+
+Now you are ready to run the ipython notebook.  Type the following command at your terminal:
+
+```sh
+ipython notebook --no-browser --ip=0.0.0.0 --script --pylab=inline &
+```
+
