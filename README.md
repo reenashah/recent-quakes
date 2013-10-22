@@ -11,14 +11,13 @@ Follow the initial setup instructions on the [Stat157 GitHub Page](https://githu
 
     sudo apt-get install libgeos-3.3.3 python-mpltoolkits.basemap python-mpltoolkits.basemap-data python-mpltoolkits.basemap-doc
 
->Then run the notebook from your machine with this command:
-
-    ipython notebook --no-browser --ip=0.0.0.0 --script --pylab=inline
-
+## Next Steps
 
 Then execute the following commands in your virtual machine:
 
 ```sh
+sudo apt-get install python-pandas
+
 git clone git@github.com:reenashah/recent-quakes-Group11.git
 
 cd recent-quakes-Group11/
@@ -31,6 +30,6 @@ The first command cloned our source code ("recent-quakes-Group11").  The third c
 Now you are ready to run the ipython notebook.  Type the following command at your terminal:
 
 ```sh
-ipython notebook --no-browser --ip=0.0.0.0 --script --pylab=inline &
+ipython notebook --no-browser --ip=0.0.0.0 --script --pylab=inline 
 ```
 
