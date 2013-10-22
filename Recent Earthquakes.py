@@ -5,74 +5,59 @@
 
 # #Recent Earthquakes: Group 11
 # This is Group11's submission of [this Stat157 assignment](https://github.com/stat157/recent-quakes).
+# 
+# To ignore the code details and just plot the most recent quakes in northern california, scroll to the bottom.
 
 # <markdowncell>
 
-# ## Data Curation
+# ##Data Curation
+# 
+# Options for how to plot earthquakes:
+# 
+# + Live data [optionally, save it locally]
+# + Cached Data
 
 # <markdowncell>
 
-# Import the necessary libraries and download the GeoJSON data from the [USGS feed](http://earthquake.usgs.gov/earthquakes/feed/v1.0/geojson.php).
+# ### Specify program options
+# 
+# First, specify whether the data should be stored locally.  Optionally specify a filename.
+
+# <codecell>
+
+use_live_data = True
+# To use cached data, set use_live_data to False.  
+
+# If you use cached data, you can optionally specify a different filename below:
+filename = 'data/f8c7029ef946b7df10fca0fb4908d7f1c3dedd91_2013-10-22_0354.geojson'
+
+caching = False
+# To store the data locally, set caching to True
+
+# <markdowncell>
+
+# Next, you can specify the URL from which to retrieve the data.  The list of USGS earthquake data feeds is [here](https://github.com/reenashah/recent-quakes-Group11-data).
+# 
+# If you're using cached data, ignore this.
+
+# <codecell>
+
+url = 'http://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/1.0_week.geojson'
+# You can modify this URL to use any USGS earthquake feed
+# The list of feeds is located at: 
+# http://earthquake.usgs.gov/earthquakes/feed/v1.0/geojson.php
+
+# <markdowncell>
+
+# Import the necessary libraries.
 
 # <codecell>
 
 import urllib
 import json
 import pandas as pd
-
-# You can modify this URL to use any USGS earthquake feed
-# The list of feeds is located at: 
-# http://earthquake.usgs.gov/earthquakes/feed/v1.0/geojson.php
-url = 'http://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/1.0_week.geojson'
-
-d = json.loads(urllib.urlopen(url).read())
-data = pd.DataFrame(d.items())
-
-# <markdowncell>
-
-# This section is the meat of the curation: it extracts the JSON data from the URL above, formats it into a Python-Pandas DataFrame, and prints out the first ten rows.
-
-# <codecell>
-
-features = data[1].values[1]
-
-Latitude = []    
-Longitude = []   
-Depth = []    
-Magnitude = []    
-Place = []
-Time = []
-Source = []
-Eqid = []
-Nst = []
-
-for item in features:
-    geometry = item['geometry']
-    properties = item['properties']
-    Longitude.append(geometry['coordinates'][0])
-    Latitude.append(geometry['coordinates'][1])
-    Depth.append(geometry['coordinates'][2])
-    Source.append(properties['net'])
-    Eqid.append(properties['code'])
-    Place.append(properties['place'])
-    Nst.append(properties['nst'])
-    Time.append(properties['time'])
-    Magnitude.append(properties['mag'])
-
-allQuakes = {
-            'Src': Source, 
-            'Eqid': Eqid,
-            'Datetime': Time,
-            'Place': Place, 
-            'NST': Nst, 
-            'Lat': Latitude, 
-            'Lon': Longitude, 
-            'Depth': Depth,
-            'Magnitude': Magnitude
-            }
-
-df = pd.DataFrame.from_dict(allQuakes)
-df[1:10]
+import hashlib
+from datetime import datetime
 
 # <markdowncell>
 
@@ -84,9 +69,6 @@ df[1:10]
 # To cache this locally-saved data in [our data repository](https://github.com/reenashah/recent-quakes-Group11-data), submit a pull request!
 
 # <codecell>
-
-import hashlib
-from datetime import datetime
 
 def save_live_data(data_url):
     """
@@ -106,14 +88,61 @@ def save_live_data(data_url):
     urllib.urlretrieve(data_url, filename)
     print "data retrieved and saved as: " + filename
 
-save_live_data(url)
-
 # <markdowncell>
 
-# Alternatively, you can reproduce our results using cached data from [our data repository](https://github.com/reenashah/recent-quakes-Group11-data) instead of live data from the USGS feed.
+# ### Turn JSON data into a useful data frame
+# 
+# This section is the meat of the curation: it extracts the JSON data from the URL above, formats it into a Python-Pandas DataFrame, and prints out the first ten rows.
 
 # <codecell>
 
+def process_json_data(data):
+    """
+    Returns a Pandas DataFrame containing relevant quake information.
+
+    DATA: A Pandas DataFrame object, produced by plot_data.  
+    [1,1] should contain the relevant JSON data.
+    """
+    
+    features = data[1].values[1]
+    
+    Latitude = []    
+    Longitude = []   
+    Depth = []    
+    Magnitude = []    
+    Place = []
+    Time = []
+    Source = []
+    Eqid = []
+    Nst = []
+    
+    for item in features:
+        geometry = item['geometry']
+        properties = item['properties']
+        Longitude.append(geometry['coordinates'][0])
+        Latitude.append(geometry['coordinates'][1])
+        Depth.append(geometry['coordinates'][2])
+        Source.append(properties['net'])
+        Eqid.append(properties['code'])
+        Place.append(properties['place'])
+        Nst.append(properties['nst'])
+        Time.append(properties['time'])
+        Magnitude.append(properties['mag'])
+    
+    allQuakes = {
+                'Src': Source, 
+                'Eqid': Eqid,
+                'Datetime': Time,
+                'Place': Place, 
+                'NST': Nst, 
+                'Lat': Latitude, 
+                'Lon': Longitude, 
+                'Depth': Depth,
+                'Magnitude': Magnitude
+                }
+
+    df = pd.DataFrame.from_dict(allQuakes)
+    return df
 
 # <headingcell level=3>
 
@@ -162,9 +191,29 @@ def plot_quakes(quakes):
 
 # <codecell>
 
-alaska = df[df['Src'] == 'ak']  ## THIS IS WORKING
-plot_quakes(alaska)
+def plot_data(caching=False, use_live_data=True, region='nc',
+              url='http://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/1.0_week.geojson', 
+              filename='data/f8c7029ef946b7df10fca0fb4908d7f1c3dedd91_2013-10-22_0354.geojson'):
+    """
+    CACHING: If true, saves the data locally.  Will not save unless USE_LIVE_DATA is True.
+    USE_LIVE_DATA: if true, uses live USGS data fetched from URL.
+                   if false, uses cached data from FILENAME.
+    """
+    
+    if (use_live_data):
+        data_source = urllib.urlopen(url).read()
+        if (caching):
+            save_live_data(url)
+    else:
+        f = open(filename, mode='r')
+        data_source = f.read()
+    
+    d = json.loads(data_source)
+    data = pd.DataFrame(d.items())
 
-# <codecell>
-
+    df = process_json_data(data)
+    df_subset = df[df['Src'] == region]
+    
+    plot_quakes(df_subset)
+    
 
