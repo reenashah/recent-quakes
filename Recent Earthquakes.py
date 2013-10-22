@@ -34,6 +34,9 @@ filename = 'data/f8c7029ef946b7df10fca0fb4908d7f1c3dedd91_2013-10-22_0354.geojso
 caching = False
 # To store the data locally, set caching to True
 
+region = 'ci'
+# region must be a valid USGS network contributor: try nc, ak, ci
+
 # <markdowncell>
 
 # Next, you can specify the URL from which to retrieve the data.  The list of USGS earthquake data feeds is [here](https://github.com/reenashah/recent-quakes-Group11-data).
@@ -92,7 +95,7 @@ def save_live_data(data_url):
 
 # ### Turn JSON data into a useful data frame
 # 
-# This section is the meat of the curation: it extracts the JSON data from the URL above, formats it into a Python-Pandas DataFrame, and prints out the first ten rows.
+# This section is the meat of the curation: it extracts the JSON data from the URL above, formats it into a Python-Pandas DataFrame.
 
 # <codecell>
 
@@ -151,7 +154,7 @@ def process_json_data(data):
 # <codecell>
 
 from mpl_toolkits.basemap import Basemap
-from numpy import mean
+#from numpy import mean
 
 def plot_quakes(quakes):
     """
@@ -162,6 +165,7 @@ def plot_quakes(quakes):
     QUAKES: a Pandas DataFrame object containing earthquake data
             with parameters "Lat", "Lon", "Magnitude"
     """
+    
     heatcolors = ('#FFFF00','#FF9900','#CC3333')
     heatcolor = None
                    
@@ -188,6 +192,10 @@ def plot_quakes(quakes):
                marker = 'o', markersize = (pi*quakes.Magnitude[i:i+1]**2), 
                alpha = 0.6)
     return m
+
+# <markdowncell>
+
+# ### Main Function
 
 # <codecell>
 
@@ -216,4 +224,15 @@ def plot_data(caching=False, use_live_data=True, region='nc',
     
     plot_quakes(df_subset)
     
+
+# <markdowncell>
+
+# # Final Product
+
+# <codecell>
+
+plot_data(caching, use_live_data, region, url, filename)
+
+# <codecell>
+
 
