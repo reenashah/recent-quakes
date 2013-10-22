@@ -1,9 +1,18 @@
 # -*- coding: utf-8 -*-
 # <nbformat>3.0</nbformat>
 
-# <headingcell level=1>
+# <markdowncell>
 
-# Recent Earthquakes: Group 11
+# #Recent Earthquakes: Group 11
+# This is Group11's submission of [this Stat157 assignment](https://github.com/stat157/recent-quakes).
+
+# <markdowncell>
+
+# ## Data Curation
+
+# <markdowncell>
+
+# Import the necessary libraries and download the GeoJSON data from the [USGS feed](http://earthquake.usgs.gov/earthquakes/feed/v1.0/geojson.php).
 
 # <codecell>
 
@@ -11,11 +20,17 @@ import urllib
 import json
 import pandas as pd
 
+# You can modify this URL to use any USGS earthquake feed
+# The list of feeds is located at: 
+# http://earthquake.usgs.gov/earthquakes/feed/v1.0/geojson.php
 url = 'http://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/1.0_week.geojson'
-d = json.loads(urllib.urlopen(url).read())
 
+d = json.loads(urllib.urlopen(url).read())
 data = pd.DataFrame(d.items())
-data
+
+# <markdowncell>
+
+# This section is the meat of the curation: it extracts the JSON data from the URL above, formats it into a Python-Pandas DataFrame, and prints out the first ten rows.
 
 # <codecell>
 
@@ -59,9 +74,16 @@ allQuakes = {
 df = pd.DataFrame.from_dict(allQuakes)
 df[1:10]
 
-# <codecell>
+# <markdowncell>
 
-url = 'http://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/1.0_week.geojson'
+# ### Cache the Live Data
+# This function uses the live data fetched from the URL above and saves it in a directory named `data/`.
+# 
+# The filename contains the current datetime and a SHA-1 hash of the data, so you can easily recognize whether data sources are identical.
+# 
+# To cache this locally-saved data in [our data repository](https://github.com/reenashah/recent-quakes-Group11-data), submit a pull request!
+
+# <codecell>
 
 import hashlib
 from datetime import datetime
@@ -72,6 +94,7 @@ def save_live_data(data_url):
     The filename is of the format: <HASH>_<DATE>_<TIME>.geojson,
         where <HASH> is a SHA1 hash of the file at data_url,
         <DATE> and <TIME> are the current UTC date and time.
+
     DATA_URL: a string containing the URL of geojson data, e.g. 
               'http://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/1.0_week.geojson'
     """
@@ -79,11 +102,18 @@ def save_live_data(data_url):
     data = urllib.urlopen(data_url).read()
     data_hash = hashlib.sha1(data).hexdigest()
     date_str = datetime.utcnow().strftime("%Y-%m-%d_%H%M")
-    filename = data_hash + "_" + date_str + ".geojson"
+    filename = "data/" + data_hash + "_" + date_str + ".geojson"
     urllib.urlretrieve(data_url, filename)
     print "data retrieved and saved as: " + filename
 
-#save_live_data(url)
+save_live_data(url)
+
+# <markdowncell>
+
+# Alternatively, you can reproduce our results using cached data from [our data repository](https://github.com/reenashah/recent-quakes-Group11-data) instead of live data from the USGS feed.
+
+# <codecell>
+
 
 # <headingcell level=3>
 
