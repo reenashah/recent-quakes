@@ -46,7 +46,7 @@ from pprint import pprint
 
 url = 'http://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_day.geojson'
 quakes = json.loads(urllib.urlopen(url).read())
-data = pd.DataFrame(d.items())
+data = pd.DataFrame(quakes.items())
 features = data[1].values[1]
 pprint(features)
 
@@ -136,7 +136,7 @@ print updateddata
 
 # <codecell>
 
-dict = {'Longitude': longitudedata,
+my_dict = {'Longitude': longitudedata,
 'Latitude': latitudedata,
 'Altitude': altitudedata,
 'Datetime': timedata,
@@ -147,12 +147,14 @@ dict = {'Longitude': longitudedata,
 'Eqid': equidata,
 'Updated':updateddata
 }
-print dict
+print my_dict
 
 # <codecell>
 
 import pandas as pd
-pd.DataFrame.from_dict(dict)[0:4]
+x = pd.DataFrame.from_dict(my_dict)
+print type(x)
+x[0:10]
 
 # <markdowncell>
 

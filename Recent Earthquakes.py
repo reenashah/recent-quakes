@@ -1,69 +1,9 @@
 # -*- coding: utf-8 -*-
 # <nbformat>3.0</nbformat>
 
-# <markdowncell>
+# <headingcell level=1>
 
-# Use [urllib](http://docs.python.org/2/library/urllib.html) to open arbitrary resources by URL and pass that data to the [read_csv](http://pandas.pydata.org/pandas-docs/stable/generated/pandas.io.parsers.read_csv.html) function of pandas. Then print out the first few rows of data using pandas [Indexing and Selecting Data](http://pandas.pydata.org/pandas-docs/dev/indexing.html).
-
-# <codecell>
-
-import urllib
-from pandas import read_csv
-
-
-url = 'http://earthquake.usgs.gov/earthquakes/catalogs/eqs7day-M1.txt'
-data = read_csv(urllib.urlopen(url))
-
-data[0:10]
-
-# <markdowncell>
-
-# **UH OH!** Note that our data is a bit *dirty* and contains a notice that this data feed has been deprecated:
-
-# <codecell>
-
-print data[0:1]['Src'].values[0]
-
-# <markdowncell>
-
-# We can filter out the dirty data using [dropna](http://pandas.pydata.org/pandas-docs/dev/generated/pandas.DataFrame.dropna.html) to drop any rows that contain **NaN**.
-
-# <codecell>
-
-clean_data = data.dropna(axis=0, how='any')
-clean_data[0:3]
-
-# <markdowncell>
-
-# In the code above note that I saved the results of `data.dropna()` into a different variable `clean_data` rather than over-writing the old variable `data`. **Why?** Why not just re-use old variable names? And if we did re-use old variable names what extra danger do we have to keep in mind while using the IPython Notebook?
-
-# <markdowncell>
-
-# Now let's just focus on earthquakes in Alaska (my home state! :)
-
-# <codecell>
-
-alaska = clean_data[clean_data.Src == 'ak']
-alaska[0:10]
-
-# <codecell>
-
-from mpl_toolkits.basemap import Basemap
-
-def plot_quakes(quakes):
-    m = Basemap(llcrnrlon=-180,llcrnrlat=50.,
-                urcrnrlon=-120.,urcrnrlat=72,
-                resolution='l',area_thresh=1000.,projection='merc',
-                lat_0=62.9540,lon_0=-149.2697)
-    m.drawcoastlines()
-    m.drawcountries()
-    m.fillcontinents(color='coral',lake_color='blue')
-    m.drawmapboundary(fill_color='aqua')
-    x, y = m(quakes.Lon, quakes.Lat)
-    m.plot(x, y, 'k.')
-    return m
-
-plot_quakes(alaska)
+# Recent Earthquakes: Group 11
 
 # <codecell>
 
@@ -83,42 +23,45 @@ features = data[1].values[1]
 
 Latitude = []    
 Longitude = []   
-Altitude = []    
+Depth = []    
 Magnitude = []    
 Place = []
 Time = []
 Source = []
+Eqid = []
+Nst = []
 
 for item in features:
     geometry = item['geometry']
     properties = item['properties']
     Longitude.append(geometry['coordinates'][0])
     Latitude.append(geometry['coordinates'][1])
-    Altitude.append(geometry['coordinates'][2])
-    Source.append(properties['sources'])
+    Depth.append(geometry['coordinates'][2])
+    Source.append(properties['net'])
+    Eqid.append(properties['code'])
     Place.append(properties['place'])
+    Nst.append(properties['nst'])
     Time.append(properties['time'])
     Magnitude.append(properties['mag'])
 
-allQuakes = {'Src': Source, 'Time': Time, 'Place': Place, 
-             'Lon': Longitude, 'Lat': Latitude, 'Alt': Altitude,
-             'Mag': Magnitude}
+allQuakes = {
+            'Src': Source, 
+            'Eqid': Eqid,
+            'Datetime': Time,
+            'Place': Place, 
+            'NST': Nst, 
+            'Lat': Latitude, 
+            'Lon': Longitude, 
+            'Depth': Depth,
+            'Magnitude': Magnitude
+            }
 
-df = pd.DataFrame(allQuakes)
-df = df.dropna()
+df = pd.DataFrame.from_dict(allQuakes)
 df[1:10]
 
 # <codecell>
 
-import urllib
-import json
-import pandas as pd
-
-url = 'http://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/significant_week.geojson'
-d = json.loads(urllib.urlopen(url).read())
-
-data = pd.DataFrame(d.items())
-data
+url = 'http://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/1.0_week.geojson'
 
 import hashlib
 from datetime import datetime
@@ -130,7 +73,7 @@ def save_live_data(data_url):
         where <HASH> is a SHA1 hash of the file at data_url,
         <DATE> and <TIME> are the current UTC date and time.
     DATA_URL: a string containing the URL of geojson data, e.g. 
-              'http://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/significant_week.geojson'
+              'http://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/1.0_week.geojson'
     """
     
     data = urllib.urlopen(data_url).read()
@@ -142,12 +85,9 @@ def save_live_data(data_url):
 
 #save_live_data(url)
 
-# <codecell>
+# <headingcell level=3>
 
-alaska = clean_data[clean_data.Src == 'ak']
-
-clean_data.Src
-unique(clean_data.Src)
+# Plotting
 
 # <codecell>
 
@@ -157,7 +97,8 @@ from numpy import mean
 def plot_quakes(quakes):
     """
     Plots earthquakes (specified in QUAKES) as slightly-transparent
-    orange circles with area proportional to magnitude.
+    orange circles with area proportional to magnitude and 
+    color indicating depth.
 
     QUAKES: a Pandas DataFrame object containing earthquake data
             with parameters "Lat", "Lon", "Magnitude"
@@ -178,9 +119,9 @@ def plot_quakes(quakes):
     m.drawmapboundary(fill_color = '#0B5BD2')
     x, y = m(quakes.Lon, quakes.Lat)
     for i in range(0, len(x) - 1):
-        if quakes.Depth[i:i+1]<70:
+        if quakes.Depth[i:i+1] < 70:
             heatcolor = heatcolors[1]
-        elif 70<=quakes.Depth[i:i+1]<300:
+        elif 70 <= quakes.Depth[i:i+1] < 300:
             heatcolor = heatcolors[2]
         else:
             heatcolor = heatcolors[3]
@@ -191,19 +132,8 @@ def plot_quakes(quakes):
 
 # <codecell>
 
-alaska = df[df['Src'].isin(',ak,')]  ## THIS IS NOT YET WORKING
-type(alaska)
-print alaska
-#plot_quakes(alaska)
-
-# <codecell>
-
-unique(clean_data.Src)
-
-# <codecell>
-
-northern_california = clean_data[clean_data.Src == 'ak']
-plot_quakes(northern_california)
+alaska = df[df['Src'] == 'ak']  ## THIS IS WORKING
+plot_quakes(alaska)
 
 # <codecell>
 
