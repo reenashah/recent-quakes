@@ -8,12 +8,12 @@ Follow the initial setup instructions on the [Stat157 GitHub Page](https://githu
 
 > To run this example you'll need to install the following packages
 > inside your virtual machine:
->
->    sudo apt-get install libgeos-3.3.3 python-mpltoolkits.basemap python-mpltoolkits.basemap-data python-mpltoolkits.basemap-doc
->
+
+    sudo apt-get install libgeos-3.3.3 python-mpltoolkits.basemap python-mpltoolkits.basemap-data python-mpltoolkits.basemap-doc
+
 >Then run the notebook from your machine with this command:
->
->    ipython notebook --no-browser --ip=0.0.0.0 --script --pylab=inline
+
+    ipython notebook --no-browser --ip=0.0.0.0 --script --pylab=inline
 
 
 Then execute the following commands in your virtual machine:
