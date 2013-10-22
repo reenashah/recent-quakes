@@ -33,3 +33,6 @@ Now you are ready to run the ipython notebook.  Type the following command at yo
 ipython notebook --no-browser --ip=0.0.0.0 --script --pylab=inline 
 ```
 
+## Presentation View
+
+If you don't want to download and install the ipython notebook, you can simply view ours as a static page [here](http://nbviewer.ipython.org/urls/raw.github.com/reenashah/recent-quakes-Group11/master/Recent%20Earthquakes.ipynb).
